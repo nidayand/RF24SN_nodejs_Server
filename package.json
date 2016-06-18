@@ -25,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "mqtt": "^1.11.2",
-    "nrf": "^0.8.1",
+    "nrf": "^0.8.3",
     "struct-fu": "^0.9.1",
     "winston": "^2.2.0",
     "yargs": "~1.2.6"
