@@ -11,9 +11,13 @@ var nrf = require('nrf');
 var mqtt = require('mqtt');
 var argv = require('yargs')
     .usage('Communication gateway between nRF24L01 network and MQTT broker.\nUsage: $0')
-    .example('$0', 'run with the default configuration')
-    .example('$0 -b mqtt://localhost:1883 -spi /dev/spidev0.0 -ce 25 -irq 24 -rate 1Mbps', 'run with all parameters specified')
+    .example('$0 -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 --rate 1Mbps', 'run with all parameters specified')
+    .demand('b')
 	.alias('b', 'broker')
+    .demand('spi')
+    .demand('ce')
+    .demand('irq')
+    .alias('r', 'rate')
 	.alias('?', 'help')
 	.alias('v', 'verbose')
 	.count('verbose')
@@ -22,7 +26,6 @@ var argv = require('yargs')
 	.describe('ce', 'GPIO pin for the CE')
 	.describe('irq', 'GPIO pin for the IRQ')
     .describe('rate', 'dataRate 250kbps/1Mbps/2Mbps')
-    .default({ b : 'mqtt://localhost:1883', spi : '/dev/spidev0.0', ce: 25, irq: 24 , rate: '1Mbps'})
     .argv;
 
 var loggingLevels = ['warn', 'info', 'verbose', 'debug', 'silly'];
@@ -39,7 +42,6 @@ var mqttClient = mqtt.connect(mqttUrl, {
   username: mqttAuth[0],
   password: mqttAuth[1]
 });
-
 
 var messageStore = [];
 

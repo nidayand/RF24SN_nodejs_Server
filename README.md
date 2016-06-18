@@ -17,11 +17,7 @@ npm uninstall rf24sn --global
 ```
 Usage:
 ```Shell
-sudo rf24sn -b mqtt://localhost:1883 -spi /dev/spidev0.0 -ce 25 -irq 24 -vvv
-```
-or if the above defaults are ok any or all can be omited:
-```Shell
-sudo rf24sn
+sudo rf24sn -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 -vvv --rate 1Mbps
 ```
 
 The -v parameter sets logging level:
