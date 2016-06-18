@@ -34,7 +34,7 @@ winston.debug('logging level set to ' + loggingLevel);
 var mqttUrl = url.parse(process.env.MQTT_BROKER_URL || argv.b);
 var mqttAuth = (mqttUrl.auth || ':').split(':');
 
-var mqttClient = mqtt.connect({host: mqttUrl.hostname, port: mqttUrl.port}, {
+var mqttClient = mqtt.connect(mqttUrl, {
   username: mqttAuth[0],
   password: mqttAuth[1]
 });
@@ -48,10 +48,6 @@ mqttClient.on('message', function(topic, message) {
 	messageStore[topic] = parseFloat(message);
 	logger.silly('now the messageStore contains ' + util.inspect(messageStore));
 });
-mqttClient.on("offline", function(){
-    logger.verbose('client went offline...');
-});
-
 
 
 // when using node-nrf, the struct members come in oposite order than sent
