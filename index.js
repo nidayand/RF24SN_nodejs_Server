@@ -34,11 +34,10 @@ winston.debug('logging level set to ' + loggingLevel);
 var mqttUrl = url.parse(process.env.MQTT_BROKER_URL || argv.b);
 var mqttAuth = (mqttUrl.auth || ':').split(':');
 
-var mqttClient = mqtt.createClient(mqttUrl.port, mqttUrl.hostname, {
+var mqttClient = mqtt.connect({host: mqttUrl.hostname, port: mqttUrl.port}, {
   username: mqttAuth[0],
   password: mqttAuth[1]
 });
-
 
 
 var messageStore = [];
@@ -48,6 +47,9 @@ mqttClient.on('message', function(topic, message) {
 	logger.verbose('received MQTT message ' + util.inspect({topic: topic, message: message}));
 	messageStore[topic] = parseFloat(message);
 	logger.silly('now the messageStore contains ' + util.inspect(messageStore));
+});
+mqttClient.on("offline", function(){
+    logger.verbose('client went offline...');
 });
 
 
