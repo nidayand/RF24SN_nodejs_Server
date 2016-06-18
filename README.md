@@ -17,7 +17,7 @@ Installation (as this is a fork use the git url):
 npm install https://github.com/nidayand/RF24SN_nodejs_Server.git --global
 ```
 Uninstallation:
-- Delete /usr/lib/node_modules/rf24sn
+- Delete /usr/lib/node_modules/rf24sn folder
 - Delete /usr/bin/rf24sn
 
 Usage:
