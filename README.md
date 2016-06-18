@@ -1,20 +1,22 @@
 RF24SN nodejs Server
 ====================
 
+NOTE: This is a fork! Testing is ongoing..
+
 Full implementation of [RF24SN](https://github.com/VaclavSynacek/RF24SN) with little dependencies. Should run on all
 platforms where there is nodejs and the [node-nrf](https://github.com/natevw/node-nrf) driver / [pi-spi](https://github.com/natevw/pi-spi) driver - currently it has been tested on Raspberry Pi.
 
 For full description of protocol, client server setup or alternative implementations, see [RF24SN](https://github.com/VaclavSynacek/RF24SN)
 
 
-Installation:
+Installation (as this is a fork use the git url):
 ```Shell
-npm install rf24sn --global
+npm install https://github.com/nidayand/RF24SN_nodejs_Server.git --global
 ```
 Uninstallation:
-```Shell
-npm uninstall rf24sn --global
-```
+- Delete /usr/lib/node_modules/rf24sn
+- Delete /usr/bin/rf24sn
+
 Usage:
 ```Shell
 sudo rf24sn -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 -vvv --rate 1Mbps
