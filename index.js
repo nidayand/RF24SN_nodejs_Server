@@ -12,7 +12,7 @@ var mqtt = require('mqtt');
 var argv = require('yargs')
     .usage('Communication gateway between nRF24L01 network and MQTT broker.\nUsage: $0')
     .example('$0', 'run with the default configuration')
-    .example('$0 -b mqtt://localhost:1883 -spi /dev/spidev0.0 -ce 25 -irq 24', 'run with all parameters specified')
+    .example('$0 -b mqtt://localhost:1883 -spi /dev/spidev0.0 -ce 25 -irq 24 -rate 1Mbps', 'run with all parameters specified')
 	.alias('b', 'broker')
 	.alias('?', 'help')
 	.alias('v', 'verbose')
@@ -21,7 +21,8 @@ var argv = require('yargs')
 	.describe('spi', 'device file for the SPI interface')
 	.describe('ce', 'GPIO pin for the CE')
 	.describe('irq', 'GPIO pin for the IRQ')
-    .default({ b : 'mqtt://localhost:1883', spi : '/dev/spidev0.0', ce: 25, irq: 24 })
+    .describe('rate', 'dataRate 250kbps/1Mbps/2Mbps')
+    .default({ b : 'mqtt://localhost:1883', spi : '/dev/spidev0.0', ce: 25, irq: 24 , rate: '1Mbps'})
     .argv;
 
 var loggingLevels = ['warn', 'info', 'verbose', 'debug', 'silly'];
@@ -63,7 +64,7 @@ var RawPacket = _.struct([
 
 // nRF24l01 general initialization
 var radio = nrf.connect(argv.spi, argv.ce, argv.irq);
-radio.channel(0x4c).dataRate('1Mbps').crcBytes(2).autoRetransmit({
+radio.channel(0x4c).dataRate(argv.rate).crcBytes(2).autoRetransmit({
 	count: 15,
 	delay: 500
 });
