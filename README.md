@@ -1,11 +1,11 @@
 RF24SN nodejs Server
 ====================
 
-NOTE: This is a fork! Testing is ongoing.. The following has been changed:
+NOTE: This is a fork! Testing is ongoing.. The following have been added/changed:
 - Updated to latest packages of yargv, mqtt and nrf
 - Fixed errors in arguments and instructions
 - Added 1 param for changing the rate (250kbps/1Mbps/2Mbps)
-- Added 1 param for checking that radio can received. I've noticed that after running for 3-5 days it stops receiving data and I have not identified where the problem resides. With this parameter you can specify the max number of seconds between received messages before a restart is made.
+- Added 1 param for checking that radio input is received. I've noticed that after running for 3-5 days it stops receiving data and I have not identified where in the code (what package) the problem resides. With this parameter you can specify the max number of seconds between received messages before a restart is made.
 
 Full implementation of [RF24SN](https://github.com/VaclavSynacek/RF24SN) with little dependencies. Should run on all
 platforms where there is nodejs and the [node-nrf](https://github.com/natevw/node-nrf) driver / [pi-spi](https://github.com/natevw/pi-spi) driver - currently it has been tested on Raspberry Pi.
@@ -23,7 +23,7 @@ Uninstallation:
 
 Usage:
 ```Shell
-sudo rf24sn -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 -vvv --rate 1Mbps
+sudo rf24sn -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 -vvv --rate 1Mbps --check 600
 ```
 
 The -v parameter sets logging level:
