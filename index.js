@@ -11,13 +11,14 @@ var nrf = require('nrf');
 var mqtt = require('mqtt');
 var argv = require('yargs')
     .usage('Communication gateway between nRF24L01 network and MQTT broker.\nUsage: $0')
-    .example('$0 -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 --rate 1Mbps', 'run with all parameters specified')
+    .example('$0 -b mqtt://localhost:1883 --spi /dev/spidev0.0 --ce 25 --irq 24 --rate 1Mbps --check 1000', 'run with all parameters specified')
     .demand('b')
 	.alias('b', 'broker')
     .demand('spi')
     .demand('ce')
     .demand('irq')
     .alias('r', 'rate')
+    .alias('c', 'check')
 	.alias('?', 'help')
 	.alias('v', 'verbose')
 	.count('verbose')
@@ -26,6 +27,7 @@ var argv = require('yargs')
 	.describe('ce', 'GPIO pin for the CE')
 	.describe('irq', 'GPIO pin for the IRQ')
     .describe('rate', 'dataRate 250kbps/1Mbps/2Mbps')
+    .describe('check', 'timeout if not received message force restart')
     .argv;
 
 var loggingLevels = ['warn', 'info', 'verbose', 'debug', 'silly'];
@@ -75,8 +77,9 @@ var listeningPipe;
 var replyPipes = [];
 
 
-//nRF24l01 listening handlers
-radio.begin(function() {
+//Initiates radio
+var checkTimer;
+var initRadio = function() {
 	var listeningPipe = radio.openPipe('rx', 0xF0F0F0F000, {
 		size: RawPacket.size,
 		autoAck: false
@@ -89,6 +92,24 @@ radio.begin(function() {
 		if (packet.packetType == 1) processPublishPacket(packet);
 		else if (packet.packetType == 3) processRequestPacket(packet);
 		else logger.warn('wrong packet type received ' + util.isnpect(packet) );
+
+        //If 'check' is enabled start timer
+logger.debug("argv: "+JSON.stringify(argv));
+        if (argv.check){
+            //Stop the existing timer
+            if (checkTimer){
+                clearTimeout(checkTimer);
+                checkTimer = undefined;
+            }
+logger.debug("starting timer");
+            checkTimer = setTimeout(function(){
+                checkTimer = undefined;
+                radio.end(function(){
+                    logger.debug('timeout is reached. No message received within '+argv.check+' seconds');
+                    radio.begin(initRadio);
+                });
+            },argv.check * 1000);
+        }
 	});
 
 	listeningPipe.on('error', function(err) {
@@ -96,7 +117,10 @@ radio.begin(function() {
 	});
 	
 	logger.debug('radio initialized');
-});
+}
+
+//nRF24l01 listening handlers
+radio.begin(initRadio);
 
 
 var processPublishPacket = function(packet) {
