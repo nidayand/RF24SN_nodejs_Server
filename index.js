@@ -94,16 +94,17 @@ var initRadio = function() {
 		else logger.warn('wrong packet type received ' + util.isnpect(packet) );
 
         //If 'check' is enabled start timer
-logger.debug("argv: "+JSON.stringify(argv));
         if (argv.check){
             //Stop the existing timer
             if (checkTimer){
                 clearTimeout(checkTimer);
                 checkTimer = undefined;
             }
-logger.debug("starting timer");
+            logger.debug("starting timer");
             checkTimer = setTimeout(function(){
                 checkTimer = undefined;
+
+                //Stopping and restarting radio
                 radio.end(function(){
                     logger.debug('timeout is reached. No message received within '+argv.check+' seconds');
                     radio.begin(initRadio);
