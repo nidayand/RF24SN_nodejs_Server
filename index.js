@@ -81,8 +81,8 @@ var replyPipes = [];
 var checkTimer;
 var initRadio = function() {
 	var listeningPipe = radio.openPipe('rx', 0xF0F0F0F000, {
-		size: RawPacket.size,
-		autoAck: false
+		//size: RawPacket.size,
+		autoAck: true //changed from false
 	});
 
 	listeningPipe.on('data', function(p) {
